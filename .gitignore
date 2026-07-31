@@ -1,0 +1,20 @@
+# Binary
+codexion
+
+# Object files
+*.o
+
+# Precompiled headers
+*.gch
+
+# Compiler / debugger leftovers
+a.out
+*.d
+*.dSYM/
+vgcore.*
+core
+
+# Editor / OS
+.vscode/
+.DS_Store
+*.swp
