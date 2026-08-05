@@ -7,8 +7,7 @@ RM			= rm -f
 
 HEADER		= codexion.h
 
-SRCS		= main.c \
-			  parse.c
+SRCS		= main.c parse.c init.c
 
 OBJS		= $(SRCS:.c=.o)
 
