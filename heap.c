@@ -41,3 +41,11 @@ void heap_pop(t_heap *h)
 		h->size--;
 	}
 }
+
+void	heap_remove_id(t_heap *h, int id)
+{
+	if (h->size > 0 && h->arr[0].coder_id == id)
+		heap_pop(h);
+	else if (h->size == 2 && h->arr[1].coder_id == id)
+		h->size--;
+}

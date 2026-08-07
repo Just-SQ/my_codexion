@@ -49,7 +49,7 @@ typedef struct s_dongle
 {
   pthread_mutex_t lock;
   pthread_cond_t cond;
-  int held; //1 = taken by a code, 0 = on the table
+  int held; //1 = taken by a coder, 0 = on the table
   long available_at; // release time + cooldown
   t_heap waiters;
 }     t_dongle;
@@ -81,6 +81,7 @@ void dongle_destroy(t_sim *s, int count);
 //heap.c
 void heap_push(t_heap *h, t_req r, int edf);
 void heap_pop(t_heap *h);
+void	heap_remove_id(t_heap *h, int id);
 
 //coder.c
 void *coder_routine(void *arg);
@@ -96,5 +97,9 @@ void join_threads(t_sim *s);
 long now_ms();
 int stopped(t_coder *c);
 void	log_state(t_coder *c, char *msg);
+
+//dongle.c
+int take_dongles(t_coder *c, t_dongle *first, t_dongle *second);
+void release_dongle(t_coder *c, t_dongle *d);
 
 #endif

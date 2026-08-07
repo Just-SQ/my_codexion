@@ -7,7 +7,7 @@ RM			= rm -f
 
 HEADER		= codexion.h
 
-SRCS		= main.c parse.c init.c cleanup.c heap.c start.c coder.c monitor.c
+SRCS		= main.c parse.c init.c cleanup.c heap.c start.c coder.c monitor.c dongle.c utils.c
 
 OBJS		= $(SRCS:.c=.o)
 

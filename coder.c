@@ -2,7 +2,7 @@
 
 int compile(t_coder *c, t_dongle *first, t_dongle *second)
 {
-	if (!take_dongles(first, second))
+	if (!take_dongles(c, first, second))
 	{
 		pthread_mutex_lock(&c->state);
 		c->last_compile_start = now_ms();
@@ -15,8 +15,8 @@ int compile(t_coder *c, t_dongle *first, t_dongle *second)
 		c->compiles++;
 		pthread_mutex_unlock(&c->state);
 
-		release_dongle(c->sim, first);
-		release_dongle(c->sim, second);
+		release_dongle(c, first);
+		release_dongle(c, second);
 		return (0);
 	}
 	return (1);

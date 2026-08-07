@@ -21,6 +21,11 @@ int stopped(t_coder *c)
 void	log_state(t_coder *c, char *msg)
 {
 	pthread_mutex_lock(&c->sim->log_lock);
+	if (stopped(c))
+	{
+		pthread_mutex_unlock(&c->sim->log_lock);
+		return ;
+	}
 	printf("%ld %d %s\n", now_ms() - c->sim->start_ms, c->id, msg);
 	pthread_mutex_unlock(&c->sim->log_lock);
 }
