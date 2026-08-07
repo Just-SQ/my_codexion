@@ -67,8 +67,34 @@ typedef struct s_sim
   long ticket; // dongle request counter
 }     t_sim;
 
-
+// parse.c
 int parse_args(t_args *s, char **argv);
+
+//init.c
 int init_sim(t_sim *s, t_args args);
+
+//cleanup.c
+void destroy_sim(t_sim *s);
+void coder_destroy(t_sim *s, int count);
+void dongle_destroy(t_sim *s, int count);
+
+//heap.c
+void heap_push(t_heap *h, t_req r, int edf);
+void heap_pop(t_heap *h);
+
+//coder.c
+void *coder_routine(void *arg);
+
+//monitor.c
+void *monitor_routine(void *arg);
+
+//start.c
+int start_thread(t_sim *s);
+void join_threads(t_sim *s);
+
+//utils.c
+long now_ms();
+int stopped(t_coder *c);
+void	log_state(t_coder *c, char *msg);
 
 #endif

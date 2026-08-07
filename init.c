@@ -10,25 +10,11 @@ int init_coders(t_sim *s)
     s->coders[i].id = i + 1;
     s->coders[i].compiles = 0;
     s->coders[i].sim = s;
-    s->coders[i].last_compile_start = 0;
     if (pthread_mutex_init(&s->coders[i].state, NULL))
-      return (1);
+      return (coder_destroy(s, i), 1);
     i++;
   }
   return (0);
-}
-
-void dongle_destroy(t_sim *s, int count)
-{
-  int i;
-
-  i = 0;
-  while (i < count)
-  {
-    pthread_mutex_destroy(&s->dongles[i].lock);
-    pthread_cond_destroy(&s->dongles[i].cond);
-    i++;
-  }
 }
 
 int init_dongle(t_dongle *dongle)
@@ -54,7 +40,7 @@ int init_dongles(t_sim *s)
   while (i < s->args.coders_nbr)
   {
     if (init_dongle(&s->dongles[i]))
-      return (dongle_destroy(s, i), 1);
+      return (dongle_destroy(s, i), coder_destroy(s, s->args.coders_nbr), 1);
     i++;
   }
   return (0);
@@ -65,7 +51,6 @@ int init_sim(t_sim *s, t_args args)
   s->args = args;
   s->stop = 0;
   s->ticket = 0;
-  s->start_ms = 0;
   s->coders = malloc(sizeof(t_coder) * args.coders_nbr);
   s->dongles = malloc(sizeof(t_dongle) * args.coders_nbr);
   if (!s->coders || !s->dongles)
