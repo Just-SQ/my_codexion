@@ -21,7 +21,7 @@ int stopped(t_coder *c)
 void	log_state(t_coder *c, char *msg)
 {
 	pthread_mutex_lock(&c->sim->log_lock);
-	if (stopped(c))
+	if (stopped(c) && strcmp("burned out", msg))
 	{
 		pthread_mutex_unlock(&c->sim->log_lock);
 		return ;

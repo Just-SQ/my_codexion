@@ -19,6 +19,8 @@ int is_swap(t_req a, t_req b, int edf)
 
 void heap_push(t_heap *h, t_req r, int edf)
 {
+	if (h->size >= 2)
+		return ;
 	if (!h->size)
 	{
 		h->arr[0] = r;

@@ -8,15 +8,13 @@ int compile(t_coder *c, t_dongle *first, t_dongle *second)
 		c->last_compile_start = now_ms();
 		pthread_mutex_unlock(&c->state);
 
-		log_state(c, "is compiling");
 		usleep(c->sim->args.compile * 1000);
 
 		pthread_mutex_lock(&c->state);
 		c->compiles++;
 		pthread_mutex_unlock(&c->state);
 
-		release_dongle(c, first);
-		release_dongle(c, second);
+		release_dongles(c, first, second);
 		return (0);
 	}
 	return (1);

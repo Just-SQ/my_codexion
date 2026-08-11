@@ -47,8 +47,6 @@ typedef struct s_coder
 
 typedef struct s_dongle
 {
-  pthread_mutex_t lock;
-  pthread_cond_t cond;
   int held; //1 = taken by a coder, 0 = on the table
   long available_at; // release time + cooldown
   t_heap waiters;
@@ -64,6 +62,8 @@ typedef struct s_sim
   int stop; // 0 while sim running, 1 stopped on burnout or coder reached compile nbr
   pthread_mutex_t state_lock;
   pthread_mutex_t log_lock;
+	pthread_mutex_t table; // mtx for both dongles
+  pthread_cond_t table_cond; // condvar for both dongles
   long ticket; // dongle request counter
 }     t_sim;
 
@@ -76,11 +76,9 @@ int init_sim(t_sim *s, t_args args);
 //cleanup.c
 void destroy_sim(t_sim *s);
 void coder_destroy(t_sim *s, int count);
-void dongle_destroy(t_sim *s, int count);
 
 //heap.c
 void heap_push(t_heap *h, t_req r, int edf);
-void heap_pop(t_heap *h);
 void	heap_remove_id(t_heap *h, int id);
 
 //coder.c
@@ -100,6 +98,6 @@ void	log_state(t_coder *c, char *msg);
 
 //dongle.c
 int take_dongles(t_coder *c, t_dongle *first, t_dongle *second);
-void release_dongle(t_coder *c, t_dongle *d);
+void release_dongles(t_coder *c, t_dongle *first, t_dongle *second);
 
 #endif

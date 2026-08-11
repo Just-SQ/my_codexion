@@ -17,33 +17,18 @@ int init_coders(t_sim *s)
   return (0);
 }
 
-int init_dongle(t_dongle *dongle)
-{
-  dongle->available_at = 0;
-  dongle->held = 0;
-  dongle->waiters.size = 0;
-  if (pthread_mutex_init(&dongle->lock, NULL))
-    return (1);
-  if (pthread_cond_init(&dongle->cond, NULL))
-  {
-    pthread_mutex_destroy(&dongle->lock);
-    return (1);
-  }
-  return (0);
-}
-
-int init_dongles(t_sim *s)
+void init_dongles(t_sim *s)
 {
   int i;
 
   i = 0;
   while (i < s->args.coders_nbr)
   {
-    if (init_dongle(&s->dongles[i]))
-      return (dongle_destroy(s, i), coder_destroy(s, s->args.coders_nbr), 1);
+    s->dongles[i].available_at = 0;
+		s->dongles[i].held = 0;
+		s->dongles[i].waiters.size = 0;
     i++;
   }
-  return (0);
 }
 
 int init_sim(t_sim *s, t_args args)
@@ -62,11 +47,27 @@ int init_sim(t_sim *s, t_args args)
     pthread_mutex_destroy(&s->state_lock);
     return(free(s->coders), free(s->dongles), 1);
   }
-  if (init_coders(s) || init_dongles(s))
+  if (pthread_mutex_init(&s->table, NULL))
+	{
+    pthread_mutex_destroy(&s->state_lock);
+    pthread_mutex_destroy(&s->log_lock);
+    return (free(s->coders), free(s->dongles), 1);
+	}
+  if (pthread_cond_init(&s->table_cond, NULL))
+  {
+		pthread_mutex_destroy(&s->state_lock);
+    pthread_mutex_destroy(&s->log_lock);
+    pthread_mutex_destroy(&s->table);
+    return (free(s->coders), free(s->dongles), 1);
+  }
+  if (init_coders(s))
   {
     pthread_mutex_destroy(&s->state_lock);
     pthread_mutex_destroy(&s->log_lock);
+		pthread_mutex_destroy(&s->table);
+		pthread_cond_destroy(&s->table_cond);
     return (free(s->coders),free(s->dongles), 1);
   }
+	init_dongles(s);
   return (0);
 }

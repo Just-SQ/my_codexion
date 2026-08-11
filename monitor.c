@@ -2,21 +2,16 @@
 
 int edit_state(t_sim *s, int dead, int done)
 {
-	int i;
-
-	i = 0;
 	if (dead || done == s->args.coders_nbr)
 	{
 		pthread_mutex_lock(&s->state_lock);
 		s->stop = 1;
 		pthread_mutex_unlock(&s->state_lock);
-		while (i < s->args.coders_nbr)
-		{ //Without this, a coder asleep in cond_wait never wakes, and pthread_join hangs forever.
-			pthread_mutex_lock(&s->dongles[i].lock);
-			pthread_cond_broadcast(&s->dongles[i].cond);
-			pthread_mutex_unlock(&s->dongles[i].lock);
-			i++;
-		}
+
+		pthread_mutex_lock(&s->table);
+		pthread_cond_broadcast(&s->table_cond);
+		pthread_mutex_unlock(&s->table);
+
 		if (dead)
 			log_state(&s->coders[dead - 1], "burned out");
 		return (1);
@@ -40,7 +35,7 @@ int check_state(t_sim *s)
 		pthread_mutex_lock(&s->coders[i].state);
 		if (s->coders[i].compiles >= s->args.compile_nbr)
 			done++;
-		if (now - s->coders[i].last_compile_start >= s->args.burnout)
+		if (now - s->coders[i].last_compile_start > s->args.burnout)
 		{
 			dead = i + 1;
 			pthread_mutex_unlock(&s->coders[i].state);
