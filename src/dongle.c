@@ -2,7 +2,7 @@
 
 static void	push_req(t_coder *c, t_dongle *first, t_dongle *second)
 {
-	t_request req;
+	t_request	req;
 
 	req.id = c->id;
 	req.order = c->sim->ticket++;
@@ -15,7 +15,7 @@ static void	push_req(t_coder *c, t_dongle *first, t_dongle *second)
 
 static void	wait_table(t_sim *s, t_dongle *first, t_dongle *second)
 {
-	long wake;
+	long			wake;
 	struct timespec	ts;
 
 	if (first->free_at > second->free_at)

@@ -1,6 +1,6 @@
 #include "codexion.h"
 
-void usage()
+static void	usage(void)
 {
 	fprintf(stderr, "Error: invalid arguments\n");
 	fprintf(stderr, "Usage: ./codexion number_of_coders time_to_burnout "
@@ -8,7 +8,7 @@ void usage()
 		"number_of_compiles_required dongle_cooldown <fifo|edf>\n");
 }
 
-void	cleanup(t_sim *s)
+static void	cleanup(t_sim *s)
 {
 	pthread_mutex_destroy(&s->table);
 	pthread_mutex_destroy(&s->log);
@@ -20,7 +20,7 @@ void	cleanup(t_sim *s)
 
 int	main(int argc, char **argv)
 {
-  t_sim s;
+	t_sim	s;
 
 	memset(&s, 0, sizeof(t_sim));
 	if (argc != 9)
@@ -32,9 +32,8 @@ int	main(int argc, char **argv)
 	if (start_threads(&s))
 	{
 		fprintf(stderr, "failed to create a thread\n");
-		return (1);
+		return (cleanup(&s), 1);
 	}
 	join_threads(&s);
-
 	return (cleanup(&s), 0);
 }

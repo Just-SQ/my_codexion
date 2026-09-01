@@ -2,7 +2,7 @@
 
 static void	heap_swap(t_heap *h)
 {
-	t_request tmp;
+	t_request	tmp;
 
 	tmp = h->arr[0];
 	h->arr[0] = h->arr[1];

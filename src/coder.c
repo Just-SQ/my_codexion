@@ -3,9 +3,9 @@
 static int	compile(t_coder *c, t_dongle *first, t_dongle *second)
 {
 	if (!take_dongles(c, first, second))
-	{	
+	{
 		state_log("has taken a dongle", c->id, c->sim);
-		
+
 		usleep(c->sim->compile_time * 1000);
 		pthread_mutex_lock(&c->sim->data);
 		c->compiles++;

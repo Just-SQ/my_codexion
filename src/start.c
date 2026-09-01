@@ -8,7 +8,7 @@ static void	cancel_start(t_sim *s, int count)
 	pthread_mutex_lock(&s->data);
 	s->is_stopped = 1;
 	pthread_mutex_unlock(&s->data);
-	
+
 	pthread_mutex_lock(&s->table);
 	pthread_cond_broadcast(&s->cond);
 	pthread_mutex_unlock(&s->table);
@@ -20,7 +20,7 @@ static void	cancel_start(t_sim *s, int count)
 	}
 }
 
-long	now_ms()
+long	now_ms(void)
 {
 	struct timeval	tv;
 
@@ -37,7 +37,8 @@ int	start_threads(t_sim *s)
 	while (i < s->coders_nbr)
 	{
 		s->coders[i].last_start = s->start_ms;
-		if (pthread_create(&s->coders[i].thread, NULL, coder_routine, &s->coders[i]))
+		if (pthread_create(&s->coders[i].thread, NULL,
+				coder_routine, &s->coders[i]))
 			return (cancel_start(s, i), 1);
 		i++;
 	}

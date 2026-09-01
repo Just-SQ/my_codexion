@@ -44,9 +44,9 @@ static void	stop_sim(t_sim *s, int dead_id)
 
 void	*monitor_routine(void *arg)
 {
-	t_sim *s;
-	int	dead_id;
-	int	done;
+	t_sim	*s;
+	int		dead_id;
+	int		done;
 	long	now;
 
 	s = arg;
@@ -57,7 +57,7 @@ void	*monitor_routine(void *arg)
 		pthread_mutex_lock(&s->data);
 		done = all_done(s);
 		if (!done)
-			dead_id = find_burnout(s, now);	
+			dead_id = find_burnout(s, now);
 		pthread_mutex_unlock(&s->data);
 		if (done || dead_id)
 			return (stop_sim(s, dead_id), NULL);
