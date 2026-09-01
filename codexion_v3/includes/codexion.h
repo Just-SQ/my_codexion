@@ -74,8 +74,7 @@ void	join_threads(t_sim *s);
 
 //heap.c
 void	heap_push(t_heap *h, t_request req, int is_edf);
-void	heap_pop(t_heap *h);
-int	heap_top(t_heap *h);
+void	remove_id(t_heap *h, int id);
 
 //coder.c
 void	*coder_routine(void *arg);
@@ -85,6 +84,9 @@ int	stopped(t_sim *s);
 //dongle.c
 int	take_dongles(t_coder *c, t_dongle *first, t_dongle *second);
 void release_dongles(t_coder *c, t_dongle *first, t_dongle *second);
+
+//dongle2.c
+int can_take(t_dongle *d, t_sim *s, int id);
 
 //monitor.c
 void	*monitor_routine(void *arg);

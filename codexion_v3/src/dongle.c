@@ -1,11 +1,5 @@
 #include "codexion.h"
 
-static int can_take(t_dongle *d, int id)
-{
-	return (!d->is_taken
-		&& now_ms() >= d->free_at && heap_top(&d->waiters) == id);
-}
-
 static void	push_req(t_coder *c, t_dongle *first, t_dongle *second)
 {
 	t_request req;
@@ -44,13 +38,13 @@ int	take_dongles(t_coder *c, t_dongle *first, t_dongle *second)
 	push_req(c, first, second);
 	while (!stopped(c->sim))
 	{
-		if (!can_take(first, c->id) || !can_take(second, c->id))
+		if (!can_take(first, c->sim, c->id) || !can_take(second, c->sim, c->id))
 		{
 			wait_table(c->sim, first, second);
 			continue;
 		}
-		heap_pop(&first->waiters);
-		heap_pop(&second->waiters);
+		remove_id(&first->waiters, c->id);
+		remove_id(&second->waiters, c->id);
 		first->is_taken = 1;
 		second->is_taken = 1;
 		pthread_mutex_lock(&c->sim->data);
